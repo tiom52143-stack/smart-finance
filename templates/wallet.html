@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Dompet & Rekening — SMART FINANCE{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Dompet -->
+<header class="page-header navy-mobile-header">
+    <div>
+        <h1>Dompet & Rekening</h1>
+        <p class="header-subtitle">Kelola saldo tunai, rekening bank, dan e-wallet dalam satu tempat</p>
+    </div>
+    <div class="header-actions">
+        <button type="button" id="openTransferModal" class="btn btn-outline-navy">
+            <i data-lucide="arrow-left-right"></i>
+            <span>Transfer Saldo</span>
+        </button>
+        <button type="button" id="openNewWalletModal" class="btn btn-success">
+            <i data-lucide="plus"></i>
+            <span>Tambah Dompet</span>
+        </button>
+    </div>
+</header>
+
+<!-- Ringkasan Total Saldo Gabungan -->
+<section class="summary-banner-grid" aria-label="Ringkasan Saldo Dompet">
+    <article class="card">
+        <span class="kpi-label">Total Saldo Gabungan</span>
+        <div class="kpi-value text-success" id="walletTotalBalance">Rp 0</div>
+        <p class="kpi-meta">Akumulasi dana dari seluruh dompet aktif</p>
+    </article>
+    <article class="card">
+        <span class="kpi-label">Dompet Aktif</span>
+        <div class="kpi-value" id="walletActiveCount">3 Dompet</div>
+        <p class="kpi-meta">Tunai, Rekening Bank, dan E-Wallet</p>
+    </article>
+</section>
+
+<!-- Toolbar Daftar Dompet -->
+<div class="section-toolbar">
+    <h3>Daftar Dompet Saya</h3>
+    <span class="text-muted" id="walletListCount">3 dompet terdaftar</span>
+</div>
+
+<!-- Grid Kartu Dompet -->
+<section class="wallets-grid" id="walletsGridContainer" aria-label="Daftar Dompet">
+    <article class="card">
+        <div class="wallet-card-header">
+            <i data-lucide="banknote"></i>
+            <span class="wallet-badge">Tunai</span>
+        </div>
+        <span class="kpi-label">Tunai</span>
+        <div class="wallet-balance">Rp 0</div>
+    </article>
+
+    <article class="card">
+        <div class="wallet-card-header">
+            <i data-lucide="landmark"></i>
+            <span class="wallet-badge">Bank</span>
+        </div>
+        <span class="kpi-label">Bank BCA</span>
+        <div class="wallet-balance">Rp 0</div>
+    </article>
+
+    <article class="card">
+        <div class="wallet-card-header">
+            <i data-lucide="smartphone"></i>
+            <span class="wallet-badge">E-Wallet</span>
+        </div>
+        <span class="kpi-label">E-Wallet</span>
+        <div class="wallet-balance">Rp 0</div>
+    </article>
+</section>
+
+<!-- Modal Tambah Dompet Baru -->
+<div id="newWalletModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="newWalletModalTitle">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="newWalletModalTitle" style="font-size:18px;">Tambah Dompet Baru</h2>
+            <button type="button" class="icon-btn" id="closeNewWalletModal" aria-label="Tutup Modal">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <form id="newWalletForm">
+            <div class="form-group">
+                <label for="walletNameInput">Nama Dompet / Rekening</label>
+                <input type="text" id="walletNameInput" name="name" class="form-input" placeholder="Contoh: Bank Mandiri, GoPay, OVO" required>
+            </div>
+            <div class="form-group">
+                <label for="walletTypeInput">Jenis Dompet</label>
+                <select id="walletTypeInput" name="type" class="form-select" required>
+                    <option value="cash">Tunai (Cash)</option>
+                    <option value="bank">Rekening Bank</option>
+                    <option value="ewallet">E-Wallet / Dompet Digital</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="walletBalanceInput">Saldo Awal (Rp)</label>
+                <input type="number" id="walletBalanceInput" name="balance" class="form-input" placeholder="0" min="0" value="0" required>
+            </div>
+            <button type="submit" class="btn btn-success btn-block">Simpan Dompet</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Transfer Saldo Antar Dompet -->
+<div id="transferWalletModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="transferWalletTitle">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="transferWalletTitle" style="font-size:18px;">Transfer Antar Dompet</h2>
+            <button type="button" class="icon-btn" id="closeTransferModal" aria-label="Tutup Modal">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <form id="transferWalletForm">
+            <div class="form-group">
+                <label for="transferFromSelect">Dari Dompet</label>
+                <select id="transferFromSelect" name="from_wallet" class="form-select" required>
+                    <option value="default-bank">Bank BCA</option>
+                    <option value="default-cash">Tunai</option>
+                    <option value="default-ewallet">E-Wallet</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="transferToSelect">Ke Dompet Tujuan</label>
+                <select id="transferToSelect" name="to_wallet" class="form-select" required>
+                    <option value="default-cash">Tunai</option>
+                    <option value="default-ewallet">E-Wallet</option>
+                    <option value="default-bank">Bank BCA</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="transferAmountInput">Nominal Transfer (Rp)</label>
+                <input type="number" id="transferAmountInput" name="amount" class="form-input" placeholder="100000" min="100" required>
+            </div>
+            <div class="form-group">
+                <label for="transferNoteInput">Catatan (Opsional)</label>
+                <input type="text" id="transferNoteInput" name="note" class="form-input" placeholder="Contoh: Tarik tunai ATM / Top up">
+            </div>
+            <button type="submit" class="btn btn-navy btn-block">Proses Transfer</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
