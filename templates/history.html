@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Riwayat Transaksi — SMART FINANCE{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Riwayat Transaksi -->
+<header class="page-header navy-mobile-header">
+    <div>
+        <h1>Riwayat Transaksi</h1>
+        <p class="header-subtitle">Telusuri, filter, dan kelola seluruh catatan pemasukan maupun pengeluaran</p>
+    </div>
+    <div class="header-actions">
+        <button type="button" class="btn btn-success open-quick-tx" data-preset-type="expense">
+            <i data-lucide="plus"></i>
+            <span>Tambah Transaksi</span>
+        </button>
+    </div>
+</header>
+
+<!-- Ringkasan Arus Kas Sesuai Filter -->
+<section class="summary-banner-grid" aria-label="Ringkasan Riwayat Transaksi">
+    <article class="card">
+        <span class="kpi-label">Total Pemasukan (Terfilter)</span>
+        <div class="kpi-value text-success" id="historyTotalIncome">Rp 0</div>
+        <p class="kpi-meta">Akumulasi dana masuk pada periode terpilih</p>
+    </article>
+    <article class="card">
+        <span class="kpi-label">Total Pengeluaran (Terfilter)</span>
+        <div class="kpi-value text-danger" id="historyTotalExpense">Rp 0</div>
+        <p class="kpi-meta">Akumulasi dana keluar pada periode terpilih</p>
+    </article>
+</section>
+
+<!-- Panel Filter & Pencarian Lengkap -->
+<section class="card filter-panel" aria-label="Filter Riwayat Transaksi">
+    <div class="card-header-row">
+        <h3><i data-lucide="sliders-horizontal" style="width:17px;height:17px;vertical-align:middle;margin-right:6px;"></i>Filter & Pencarian</h3>
+        <button type="button" id="resetHistoryFilterBtn" class="btn btn-outline-navy btn-sm">
+            <i data-lucide="rotate-ccw"></i>
+            <span>Reset</span>
+        </button>
+    </div>
+
+    <div class="filter-grid-4" style="margin-bottom:12px;">
+        <input type="search" id="historySearchInput" class="form-input" placeholder="Cari catatan atau kategori...">
+        <select id="historyTypeFilter" class="form-select" aria-label="Filter Jenis Transaksi">
+            <option value="all">Semua Jenis</option>
+            <option value="income">Pemasukan (+)</option>
+            <option value="expense">Pengeluaran (-)</option>
+        </select>
+        <select id="historyCategoryFilter" class="form-select" aria-label="Filter Kategori">
+            <option value="all">Semua Kategori</option>
+            <optgroup label="Pengeluaran">
+                <option value="Makan">Makan</option>
+                <option value="Transportasi">Transportasi</option>
+                <option value="Tagihan">Tagihan</option>
+                <option value="Kesehatan">Kesehatan</option>
+                <option value="Hiburan">Hiburan</option>
+                <option value="Belanja">Belanja</option>
+                <option value="Pendidikan">Pendidikan</option>
+            </optgroup>
+            <optgroup label="Pemasukan">
+                <option value="Gaji">Gaji</option>
+                <option value="Bonus">Bonus</option>
+                <option value="Bisnis">Bisnis</option>
+                <option value="Investasi">Investasi</option>
+                <option value="Hadiah">Hadiah</option>
+            </optgroup>
+            <option value="Lainnya">Lainnya</option>
+        </select>
+        <select id="historyWalletFilter" class="form-select" aria-label="Filter Dompet">
+            <option value="all">Semua Dompet</option>
+            <option value="default-cash">Tunai</option>
+            <option value="default-bank">Bank BCA</option>
+            <option value="default-ewallet">E-Wallet</option>
+        </select>
+    </div>
+
+    <div class="filter-controls">
+        <div style="min-width:190px;">
+            <input type="month" id="historyMonthFilter" class="form-input" aria-label="Filter Bulan Transaksi">
+        </div>
+    </div>
+</section>
+
+<!-- Daftar Seluruh Riwayat Transaksi -->
+<section class="card" aria-label="Daftar Riwayat Transaksi">
+    <div class="card-header-row">
+        <h3>Semua Catatan Transaksi</h3>
+        <span class="text-muted" id="historyResultCount">0 transaksi ditampilkan</span>
+    </div>
+    <div class="tx-card-list" id="historyListContainer">
+        <p class="text-muted">Belum ada catatan transaksi. Klik tombol <strong>"Tambah Transaksi"</strong> atau ikon <strong>+</strong> untuk mulai mencatat.</p>
+    </div>
+</section>
+
+<!-- Modal Edit / Hapus Transaksi -->
+<div id="editTxModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="editTxModalTitle">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="editTxModalTitle" style="font-size:18px;">Ubah Transaksi</h2>
+            <button type="button" class="icon-btn" id="closeEditTxModal" aria-label="Tutup Modal">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <form id="editTxForm">
+            <input type="hidden" id="editTxUuid" name="tx_uuid">
+
+            <div class="form-group">
+                <label for="editTxType">Jenis Transaksi</label>
+                <select id="editTxType" name="type" class="form-select" required>
+                    <option value="expense">Pengeluaran</option>
+                    <option value="income">Pemasukan</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="editTxAmount">Nominal (Rp)</label>
+                <input type="number" id="editTxAmount" name="amount" class="form-input" min="1" step="any" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editTxCategory">Kategori</label>
+                <select id="editTxCategory" name="category" class="form-select" required>
+                    <option value="Makan">Makan</option>
+                    <option value="Transportasi">Transportasi</option>
+                    <option value="Tagihan">Tagihan</option>
+                    <option value="Kesehatan">Kesehatan</option>
+                    <option value="Hiburan">Hiburan</option>
+                    <option value="Belanja">Belanja</option>
+                    <option value="Pendidikan">Pendidikan</option>
+                    <option value="Gaji">Gaji</option>
+                    <option value="Bonus">Bonus</option>
+                    <option value="Bisnis">Bisnis</option>
+                    <option value="Investasi">Investasi</option>
+                    <option value="Hadiah">Hadiah</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="editTxWallet">Dompet</label>
+                <select id="editTxWallet" name="wallet_uuid" class="form-select" required>
+                    <option value="default-cash">Tunai</option>
+                    <option value="default-bank">Bank BCA</option>
+                    <option value="default-ewallet">E-Wallet</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="editTxDate">Tanggal</label>
+                <input type="date" id="editTxDate" name="transaction_date" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editTxNote">Catatan</label>
+                <input type="text" id="editTxNote" name="note" class="form-input" placeholder="Keterangan transaksi">
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:10px;margin-top:16px;">
+                <button type="button" id="deleteTxBtn" class="btn btn-outline-danger">
+                    <i data-lucide="trash-2"></i>
+                    <span>Hapus</span>
+                </button>
+                <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
