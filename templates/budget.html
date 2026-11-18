@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Anggaran — SMART FINANCE{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Anggaran -->
+<header class="page-header navy-mobile-header">
+    <div>
+        <h1>Anggaran Bulanan</h1>
+        <p class="header-subtitle">Atur batas pengeluaran tiap kategori agar keuangan tetap terkendali</p>
+    </div>
+    <div class="header-actions">
+        <input type="month" id="budgetMonthSelector" class="form-input" style="width:auto;min-width:155px;" aria-label="Pilih Bulan Anggaran">
+        <button type="button" id="openNewBudgetModal" class="btn btn-success">
+            <i data-lucide="plus"></i>
+            <span>Atur Anggaran</span>
+        </button>
+    </div>
+</header>
+
+<!-- Ringkasan Keseluruhan Anggaran Bulan Ini -->
+<section class="summary-banner-grid" aria-label="Ringkasan Anggaran">
+    <article class="card">
+        <span class="kpi-label">Total Batas Anggaran</span>
+        <div class="kpi-value" id="budgetTotalLimit">Rp 0</div>
+        <p class="kpi-meta" id="budgetRemainingMeta">Sisa anggaran tersedia: Rp 0</p>
+    </article>
+    <article class="card">
+        <div class="card-header-row" style="margin-bottom:6px;">
+            <span class="kpi-label">Total Terpakai</span>
+            <strong class="text-success" id="budgetUsagePctLabel">0%</strong>
+        </div>
+        <div class="kpi-value text-danger" id="budgetTotalSpent">Rp 0</div>
+        <div class="progress-track" style="margin-top:8px;">
+            <div class="progress-fill bg-success" id="budgetOverallProgressBar" style="width: 0%;"></div>
+        </div>
+    </article>
+</section>
+
+<!-- Toolbar Daftar Anggaran -->
+<div class="section-toolbar">
+    <h3>Rincian Anggaran per Kategori</h3>
+    <span class="text-muted" id="budgetCategoryCount">0 kategori</span>
+</div>
+
+<!-- Daftar Kartu Progres Anggaran per Kategori -->
+<section class="budget-list-stack" id="budgetListContainer" aria-label="Daftar Anggaran Kategori">
+    <article class="card">
+        <p class="text-muted">Belum ada batas anggaran diatur untuk bulan ini. Klik tombol <strong>"Atur Anggaran"</strong> untuk mulai menetapkan batas pengeluaran.</p>
+    </article>
+</section>
+
+<!-- Modal Tambah / Ubah Anggaran Kategori -->
+<div id="newBudgetModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="newBudgetModalTitle">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="newBudgetModalTitle" style="font-size:18px;">Atur Batas Anggaran</h2>
+            <button type="button" class="icon-btn" id="closeNewBudgetModal" aria-label="Tutup Modal">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <form id="newBudgetForm">
+            <div class="form-group">
+                <label for="budgetCategoryInput">Kategori Pengeluaran</label>
+                <select id="budgetCategoryInput" name="category" class="form-select" required>
+                    <option value="Makan">Makan & Minuman</option>
+                    <option value="Transportasi">Transportasi</option>
+                    <option value="Tagihan">Tagihan & Utilitas</option>
+                    <option value="Kesehatan">Kesehatan</option>
+                    <option value="Hiburan">Hiburan</option>
+                    <option value="Belanja">Belanja</option>
+                    <option value="Pendidikan">Pendidikan</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="budgetLimitInput">Batas Maksimal (Rp)</label>
+                <input type="number" id="budgetLimitInput" name="limit_amount" class="form-input" placeholder="Contoh: 1500000" min="1000" required>
+            </div>
+            <div class="form-group">
+                <label for="budgetMonthInput">Periode Bulan</label>
+                <input type="month" id="budgetMonthInput" name="month_year" class="form-input" required>
+            </div>
+
+            <div class="offline-info-box">
+                <i data-lucide="bell-ring"></i>
+                <span>Indikator berubah kuning saat pemakaian mencapai 80% dan merah jika melebihi 100%.</span>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block">Simpan Anggaran</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
