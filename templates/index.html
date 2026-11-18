@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0B2545">
+    <title>SMART FINANCE — Kelola Keuangan & Target Tabungan</title>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="landing-body">
+    <header class="landing-navbar">
+        <div class="container nav-flex">
+            <div class="logo-box">
+                <span class="logo-icon-green"><i data-lucide="bar-chart-2"></i></span>
+                <span class="logo-text-navy">SMART FINANCE</span>
+            </div>
+            <div class="nav-actions">
+                <a href="{{ url_for('login') }}" class="btn btn-outline-navy">Masuk</a>
+                <a href="{{ url_for('register') }}" class="btn btn-success">Daftar Gratis</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <span class="badge-pill">Aplikasi Web & PWA • Online & Offline</span>
+                <h1>Kendalikan Keuangan Pribadi & Capai Target Tabungan Lebih Cepat</h1>
+                <p>Catat pemasukan dan pengeluaran harian dalam 3 ketukan, pantau batas anggaran bulanan, dan kelola banyak dompet dalam satu aplikasi profesional.</p>
+                <div class="hero-cta-group">
+                    <a href="{{ url_for('login') }}" class="btn btn-success btn-lg">Mulai Sekarang</a>
+                    <button type="button" id="landingGuestBtn" class="btn btn-outline-light btn-lg">Coba sebagai Tamu</button>
+                    <button type="button" id="installPwaBtn" class="btn btn-navy-light btn-lg hidden">
+                        <i data-lucide="download"></i> Pasang Aplikasi
+                    </button>
+                </div>
+            </div>
+            <div class="hero-highlights">
+                <div class="feature-preview-card">
+                    <i data-lucide="wifi-off" class="text-success"></i>
+                    <h3>Tetap Jalan Tanpa Internet</h3>
+                    <p>Data tersimpan aman di perangkat dan otomatis sinkron saat terhubung kembali.</p>
+                </div>
+                <div class="feature-preview-card">
+                    <i data-lucide="shield-check" class="text-success"></i>
+                    <h3>Keamanan PIN 6 Digit</h3>
+                    <p>Lindungi privasi catatan keuangan pribadi Anda seperti aplikasi perbankan.</p>
+                </div>
+                <div class="feature-preview-card">
+                    <i data-lucide="pie-chart" class="text-success"></i>
+                    <h3>Laporan & Grafik Otomatis</h3>
+                    <p>Analisis pengeluaran per kategori dan unduh laporan PDF maupun Excel.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/db-local.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
