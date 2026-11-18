@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Laporan Keuangan — SMART FINANCE{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Laporan -->
+<header class="page-header navy-mobile-header">
+    <div>
+        <h1>Laporan Keuangan</h1>
+        <p class="header-subtitle">Analisis arus kas, rincian kategori, dan ekspor ringkasan bulanan</p>
+    </div>
+    <div class="header-actions">
+        <button type="button" id="exportExcelBtn" class="btn btn-outline-navy">
+            <i data-lucide="file-spreadsheet"></i>
+            <span>Ekspor Excel</span>
+        </button>
+        <button type="button" id="exportPdfBtn" class="btn btn-success">
+            <i data-lucide="file-down"></i>
+            <span>Unduh PDF</span>
+        </button>
+    </div>
+</header>
+
+<!-- Panel Filter Periode & Dompet -->
+<section class="card filter-panel" aria-label="Filter Laporan">
+    <div class="filter-grid-3">
+        <div class="form-group" style="margin-bottom:0;">
+            <label for="reportMonthFilter">Periode Bulan</label>
+            <input type="month" id="reportMonthFilter" class="form-input">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+            <label for="reportWalletFilter">Filter Dompet</label>
+            <select id="reportWalletFilter" class="form-select">
+                <option value="all">Semua Dompet</option>
+                <option value="default-cash">Tunai</option>
+                <option value="default-bank">Bank BCA</option>
+                <option value="default-ewallet">E-Wallet</option>
+            </select>
+        </div>
+        <button type="button" id="applyReportFilterBtn" class="btn btn-navy">
+            <i data-lucide="filter"></i>
+            <span>Tampilkan Laporan</span>
+        </button>
+    </div>
+</section>
+
+<!-- Ringkasan Arus Kas Periode Terpilih -->
+<section class="summary-banner-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));" aria-label="Ringkasan Laporan">
+    <article class="card">
+        <span class="kpi-label">Total Pemasukan</span>
+        <div class="kpi-value text-success" id="reportTotalIncome">Rp 0</div>
+        <p class="kpi-meta" id="reportIncomeMeta">Periode terpilih</p>
+    </article>
+    <article class="card">
+        <span class="kpi-label">Total Pengeluaran</span>
+        <div class="kpi-value text-danger" id="reportTotalExpense">Rp 0</div>
+        <p class="kpi-meta" id="reportExpenseMeta">Periode terpilih</p>
+    </article>
+    <article class="card">
+        <span class="kpi-label">Selisih Arus Kas Bersih</span>
+        <div class="kpi-value" id="reportNetCashflow">Rp 0</div>
+        <p class="kpi-meta" id="reportSavingsRateMeta">Rasio tabungan: 0%</p>
+    </article>
+</section>
+
+<!-- Grafik Visualisasi Laporan -->
+<section class="charts-grid" aria-label="Grafik Analisis Keuangan">
+    <!-- Grafik Perbandingan Bulanan -->
+    <article class="card">
+        <div class="card-header-row">
+            <h3>Tren Pemasukan vs Pengeluaran</h3>
+            <div class="chart-legend">
+                <span><i class="legend-dot bg-success"></i>Pemasukan</span>
+                <span><i class="legend-dot bg-danger"></i>Pengeluaran</span>
+            </div>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="reportTrendChart"></canvas>
+        </div>
+    </article>
+
+    <!-- Grafik Proporsi Kategori Pengeluaran -->
+    <article class="card">
+        <div class="card-header-row">
+            <h3>Proporsi Pengeluaran</h3>
+        </div>
+        <div class="donut-layout">
+            <div class="donut-canvas-box">
+                <canvas id="reportCategoryDonutChart"></canvas>
+            </div>
+            <ul class="category-legend-list" id="reportCategoryLegend">
+                <li><span>Belum ada data</span><strong>0%</strong></li>
+            </ul>
+        </div>
+    </article>
+</section>
+
+<!-- Tabel Rincian per Kategori -->
+<section class="card" aria-label="Rincian Pengeluaran per Kategori">
+    <div class="card-header-row">
+        <h3>Rincian Transaksi per Kategori</h3>
+        <span class="text-muted" id="reportCategorySummaryCount">0 kategori tercatat</span>
+    </div>
+    <div class="table-responsive">
+        <table class="tx-table">
+            <thead>
+                <tr>
+                    <th>Kategori</th>
+                    <th>Jenis</th>
+                    <th>Jumlah Transaksi</th>
+                    <th class="text-right">Total Nominal</th>
+                    <th class="text-right">Porsi</th>
+                </tr>
+            </thead>
+            <tbody id="reportCategoryTableBody">
+                <tr>
+                    <td colspan="5" class="text-muted">Belum ada data transaksi pada periode yang dipilih.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}
