@@ -1,0 +1,46 @@
+{
+  "name": "SMART FINANCE - Pengelolaan Keuangan Pribadi",
+  "short_name": "SMART FINANCE",
+  "description": "Aplikasi pengelolaan keuangan pribadi, anggaran bulanan, dan target tabungan yang mendukung mode online maupun offline.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0B2545",
+  "theme_color": "#0B2545",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    {
+      "src": "/static/images/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tambah Transaksi",
+      "short_name": "Transaksi",
+      "description": "Catat pemasukan atau pengeluaran baru",
+      "url": "/dashboard?action=new-tx"
+    },
+    {
+      "name": "Target Tabungan",
+      "short_name": "Tabungan",
+      "description": "Pantau progres target tabungan",
+      "url": "/savings"
+    },
+    {
+      "name": "Riwayat Transaksi",
+      "short_name": "Riwayat",
+      "description": "Lihat seluruh catatan keuangan",
+      "url": "/history"
+    }
+  ]
+}
