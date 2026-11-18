@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0B2545">
+    <title>Daftar Akun — SMART FINANCE</title>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="auth-navy-bg">
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Identitas Aplikasi -->
+            <div class="auth-brand">
+                <a href="{{ url_for('index') }}" class="auth-logo-square" aria-label="Kembali ke Beranda">
+                    <i data-lucide="wallet-cards"></i>
+                </a>
+                <h1>Buat Akun Baru</h1>
+                <p>Simpan dan sinkronkan seluruh riwayat keuangan serta target tabungan Anda secara otomatis.</p>
+            </div>
+
+            <!-- Pesan Notifikasi Flash dari Server (Jika Ada) -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div id="authAlertBox" class="offline-info-box" style="margin-bottom: 14px; justify-content: center;">
+                        {% for category, message in messages %}
+                            <span class="{% if category == 'danger' %}text-danger{% else %}text-success{% endif %} font-semibold">
+                                {{ message }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Daftar Cepat via OAuth 2.0 -->
+            <div class="oauth-stack">
+                <a href="/auth/google" class="btn-oauth">
+                    <span class="oauth-badge" style="color: #EA4335;">G</span>
+                    <span>Daftar dengan Google</span>
+                </a>
+                <a href="/auth/facebook" class="btn-oauth">
+                    <span class="oauth-badge" style="color: #1877F2;">f</span>
+                    <span>Daftar dengan Facebook</span>
+                </a>
+                <a href="/auth/apple" class="btn-oauth">
+                    <span class="oauth-badge"><i data-lucide="apple" style="width:18px;height:18px;"></i></span>
+                    <span>Daftar dengan Apple</span>
+                </a>
+            </div>
+
+            <!-- Formulir Pendaftaran Email -->
+            <form id="registerForm" action="{{ url_for('register') }}" method="POST" class="stack-form">
+                <div class="form-group">
+                    <label for="regFullName">Nama Lengkap</label>
+                    <input type="text" id="regFullName" name="full_name" class="form-input" placeholder="Contoh: Budi Santoso" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Alamat Email</label>
+                    <input type="email" id="regEmail" name="email" class="form-input" placeholder="nama@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Kata Sandi</label>
+                    <input type="password" id="regPassword" name="password" class="form-input" placeholder="Minimal 6 karakter" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label for="regConfirmPassword">Konfirmasi Kata Sandi</label>
+                    <input type="password" id="regConfirmPassword" name="confirm_password" class="form-input" placeholder="Ulangi kata sandi" minlength="6" required>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Daftar Sekarang</button>
+            </form>
+
+            <!-- Opsi Masuk Sebagai Tamu -->
+            <div class="guest-access-box">
+                <button type="button" id="guestLoginBtn" class="btn-guest-link">
+                    Gunakan tanpa akun (Mode Tamu) →
+                </button>
+                <p class="guest-note">Anda tetap bisa menghubungkan data tamu ke akun ini di kemudian hari.</p>
+            </div>
+
+            <p class="auth-switch-text">
+                Sudah punya akun? <a href="{{ url_for('login') }}">Masuk di sini</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/db-local.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
