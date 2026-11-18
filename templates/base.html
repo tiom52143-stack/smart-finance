@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0B2545">
-    <title>{% block title %}SMART FINANCE — Kelola Keuangan Pribadi{% endblock %}</title>
+    <meta name="theme-color" content="#081C38">
+    <title>{% block title %}SMART FINANCE — Dashboard Keuangan{% endblock %}</title>
 
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
     <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='images/icons/icon-192x192.png') }}">
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/icons/icon-192x192.png') }}">
 
-    <!-- Font & Ikon -->
+    <!-- Font & Pustaka Grafik/Ikon -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,46 +24,51 @@
 </head>
 <body>
     <div class="app-shell">
-        <!-- SIDEBAR DESKTOP -->
+        <!-- SIDEBAR BIRU TUA (SESUAI DESAIN TARGET) -->
         <aside class="sidebar">
             <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
-                <i data-lucide="wallet"></i>
+                <span class="brand-icon-box">
+                    <i data-lucide="bar-chart-2" style="width:19px;height:19px;"></i>
+                </span>
                 <span>SMART FINANCE</span>
             </a>
 
             <nav class="sidebar-nav">
                 <a href="{{ url_for('dashboard') }}" class="nav-item {{ 'active' if active_page == 'dashboard' else '' }}">
-                    <i data-lucide="layout-dashboard"></i>
-                    <span>Beranda</span>
+                    <i data-lucide="home"></i>
+                    <span>Dashboard</span>
                 </a>
                 <a href="{{ url_for('income') }}" class="nav-item {{ 'active' if active_page == 'income' else '' }}">
-                    <i data-lucide="arrow-down-left"></i>
-                    <span>Pemasukan</span>
+                    <i data-lucide="arrow-up"></i>
+                    <span>Income</span>
                 </a>
                 <a href="{{ url_for('expense') }}" class="nav-item {{ 'active' if active_page == 'expense' else '' }}">
-                    <i data-lucide="arrow-up-right"></i>
-                    <span>Pengeluaran</span>
+                    <i data-lucide="arrow-down"></i>
+                    <span>Expense</span>
                 </a>
                 <a href="{{ url_for('savings') }}" class="nav-item {{ 'active' if active_page == 'savings' else '' }}">
-                    <i data-lucide="piggy-bank"></i>
-                    <span>Target Tabungan</span>
+                    <i data-lucide="target"></i>
+                    <span>Savings</span>
                 </a>
                 <a href="{{ url_for('budget') }}" class="nav-item {{ 'active' if active_page == 'budget' else '' }}">
                     <i data-lucide="pie-chart"></i>
-                    <span>Anggaran</span>
+                    <span>Budget</span>
                 </a>
                 <a href="{{ url_for('history') }}" class="nav-item {{ 'active' if active_page == 'history' else '' }}">
-                    <i data-lucide="history"></i>
-                    <span>Riwayat</span>
+                    <i data-lucide="list"></i>
+                    <span>History</span>
                 </a>
                 <a href="{{ url_for('report') }}" class="nav-item {{ 'active' if active_page == 'report' else '' }}">
                     <i data-lucide="bar-chart-3"></i>
-                    <span>Laporan</span>
+                    <span>Report</span>
                 </a>
                 <a href="{{ url_for('wallet') }}" class="nav-item {{ 'active' if active_page == 'wallet' else '' }}">
-                    <i data-lucide="credit-card"></i>
-                    <span>Dompet</span>
+                    <i data-lucide="wallet"></i>
+                    <span>Wallet</span>
                 </a>
+            </nav>
+
+            <div class="sidebar-footer-nav">
                 <a href="{{ url_for('profile') }}" class="nav-item {{ 'active' if active_page == 'profile' else '' }}">
                     <i data-lucide="user"></i>
                     <span>Profil</span>
@@ -72,29 +77,25 @@
                     <i data-lucide="settings"></i>
                     <span>Pengaturan</span>
                 </a>
-            </nav>
+            </div>
         </aside>
 
         <!-- AREA KONTEN UTAMA -->
         <div class="main-content">
             <header class="topbar">
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <div id="userAvatarBadge" style="width:38px;height:38px;border-radius:50%;background:var(--navy-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">
-                        SF
-                    </div>
-                    <div>
-                        <div style="font-size:12px;color:var(--text-muted);">Halo,</div>
-                        <strong id="userGreetingName" style="color:var(--navy-primary);font-size:15px;">Pengguna</strong>
-                    </div>
+                <div>
+                    <h1 id="pageMainTitle" class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                    <p id="currentDateDisplay" class="page-subtitle">Memuat tanggal...</p>
                 </div>
 
-                <div style="display:flex;align-items:center;gap:10px;">
+                <div class="topbar-actions">
                     <span id="networkStatusPill" class="status-pill status-online">
-                        <span id="networkStatusText">Online</span>
+                        <span class="status-dot"></span>
+                        <span id="networkStatusText">Online • Tersinkron</span>
                     </span>
-                    <button type="button" id="openQuickTxModalDesktop" class="btn btn-success btn-sm">
-                        <i data-lucide="plus"></i>
-                        <span>Catat Transaksi</span>
+                    <button type="button" id="openQuickTxModalDesktop" class="btn btn-success">
+                        <i data-lucide="plus" style="width:16px;height:16px;"></i>
+                        <span>Tambah transaksi</span>
                     </button>
                 </div>
             </header>
@@ -108,19 +109,19 @@
     <!-- NAVIGASI BAWAH MOBILE (5 TOMBOL) -->
     <nav class="mobile-bottom-nav">
         <a href="{{ url_for('dashboard') }}" class="bottom-nav-item {{ 'active' if active_page == 'dashboard' else '' }}">
-            <i data-lucide="layout-dashboard"></i>
-            <span>Beranda</span>
+            <i data-lucide="home"></i>
+            <span>Dashboard</span>
         </a>
         <a href="{{ url_for('history') }}" class="bottom-nav-item {{ 'active' if active_page == 'history' else '' }}">
-            <i data-lucide="history"></i>
-            <span>Riwayat</span>
+            <i data-lucide="list"></i>
+            <span>History</span>
         </a>
         <button type="button" id="openQuickTxModalMobile" class="fab-center-btn" aria-label="Tambah Transaksi">
             <i data-lucide="plus"></i>
         </button>
         <a href="{{ url_for('budget') }}" class="bottom-nav-item {{ 'active' if active_page == 'budget' else '' }}">
             <i data-lucide="pie-chart"></i>
-            <span>Anggaran</span>
+            <span>Budget</span>
         </a>
         <button type="button" id="openMobileMenuDrawer" class="bottom-nav-item">
             <i data-lucide="grid"></i>
@@ -128,30 +129,30 @@
         </button>
     </nav>
 
-    <!-- DRAWER MENU TAMBAHAN MOBILE -->
+    <!-- DRAWER MENU MOBILE -->
     <div id="mobileMenuDrawer" class="modal-backdrop hidden">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 style="color:var(--navy-primary);">Semua Menu</h3>
+                <h3 class="text-navy">Semua Menu</h3>
                 <button type="button" id="closeMobileMenuDrawer" class="btn btn-outline-navy btn-sm">Tutup</button>
             </div>
             <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-                <a href="{{ url_for('income') }}" class="btn btn-outline-navy">Pemasukan</a>
-                <a href="{{ url_for('expense') }}" class="btn btn-outline-navy">Pengeluaran</a>
-                <a href="{{ url_for('savings') }}" class="btn btn-outline-navy">Tabungan</a>
-                <a href="{{ url_for('report') }}" class="btn btn-outline-navy">Laporan</a>
-                <a href="{{ url_for('wallet') }}" class="btn btn-outline-navy">Dompet</a>
+                <a href="{{ url_for('income') }}" class="btn btn-outline-navy">Income</a>
+                <a href="{{ url_for('expense') }}" class="btn btn-outline-navy">Expense</a>
+                <a href="{{ url_for('savings') }}" class="btn btn-outline-navy">Savings</a>
+                <a href="{{ url_for('report') }}" class="btn btn-outline-navy">Report</a>
+                <a href="{{ url_for('wallet') }}" class="btn btn-outline-navy">Wallet</a>
                 <a href="{{ url_for('profile') }}" class="btn btn-outline-navy">Profil</a>
-                <a href="{{ url_for('settings') }}" class="btn btn-outline-navy" style="grid-column:span 2;">Pengaturan & Keamanan PIN</a>
+                <a href="{{ url_for('settings') }}" class="btn btn-outline-navy" style="grid-column:span 2;">Pengaturan & PIN</a>
             </div>
         </div>
     </div>
 
-    <!-- MODAL CATAT TRANSAKSI CEPAT (3 KETUKAN) -->
+    <!-- MODAL TAMBAH TRANSAKSI CEPAT -->
     <div id="quickTxModal" class="modal-backdrop hidden">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 style="color:var(--navy-primary);">Catat Transaksi Baru</h3>
+                <h3 class="text-navy">Tambah Transaksi</h3>
                 <button type="button" id="closeQuickTxModal" class="btn btn-outline-navy btn-sm">✕</button>
             </div>
 
@@ -166,11 +167,11 @@
 
                 <div class="form-group">
                     <label for="txAmountInput">Nominal (Rp)</label>
-                    <input type="number" id="txAmountInput" placeholder="Contoh: 25000" min="1" required>
+                    <input type="number" id="txAmountInput" placeholder="0" min="1" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Pilih Kategori</label>
+                    <label>Kategori</label>
                     <div id="txCategoryGrid" class="cat-grid"></div>
                 </div>
 
@@ -185,7 +186,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="txNoteInput">Catatan (Opsional)</label>
+                    <label for="txNoteInput">Deskripsi / Catatan</label>
                     <input type="text" id="txNoteInput" placeholder="Contoh: Makan siang">
                 </div>
 
@@ -199,7 +200,7 @@
         <div class="pin-card">
             <i data-lucide="lock" style="width:32px;height:32px;margin-bottom:8px;"></i>
             <h3>Masukkan PIN Keamanan</h3>
-            <p style="font-size:13px;color:#CBD5E1;margin-top:4px;">Masukkan 6 digit PIN untuk membuka SMART FINANCE</p>
+            <p style="font-size:13px;color:#94A3B8;margin-top:4px;">Masukkan 6 digit PIN untuk membuka SMART FINANCE</p>
             <div id="pinDots" class="pin-dots">
                 <span></span><span></span><span></span><span></span><span></span><span></span>
             </div>
