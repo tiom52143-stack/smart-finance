@@ -5,14 +5,14 @@
     'use strict';
 
     const PALETTE = [
-        '#0B2545', // Navy Utama
-        '#1FA66A', // Hijau Semantik
+        '#081C38', // Navy Utama
         '#E8A317', // Kuning Emas
-        '#D64545', // Merah
-        '#1D437A', // Navy Terang
-        '#2B8A6E', // Teal
-        '#64748B', // Abu-abu Slate
-        '#94A3B8'  // Abu-abu Lembut
+        '#4A77A8', // Biru Slate
+        '#89A8C9', // Biru Muda
+        '#7C6992', // Ungu Lembut
+        '#94A3B8', // Abu-abu
+        '#1F9D63', // Hijau
+        '#D64545'  // Merah
     ];
 
     const MONTH_NAMES_ID = [
@@ -29,6 +29,17 @@
         return 'Rp ' + Math.round(Number(amount || 0)).toLocaleString('id-ID');
     }
 
+    function formatCompactRupiah(amount) {
+        const val = Number(amount || 0);
+        if (val >= 1000000) {
+            return 'Rp ' + (val / 1000000).toFixed(1).replace('.', ',') + ' jt';
+        }
+        if (val >= 1000) {
+            return 'Rp ' + Math.round(val / 1000) + ' rb';
+        }
+        return 'Rp ' + Math.round(val);
+    }
+
     function getLastSixMonthsKeys() {
         const result = [];
         const now = new Date();
@@ -38,7 +49,7 @@
             const month = String(d.getMonth() + 1).padStart(2, '0');
             result.push({
                 key: `${year}-${month}`,
-                label: `${MONTH_NAMES_ID[d.getMonth()]} ${String(year).slice(-2)}`
+                label: MONTH_NAMES_ID[d.getMonth()]
             });
         }
         return result;
@@ -106,11 +117,11 @@
         const { items, grandTotal } = categoryData;
 
         if (grandTotal <= 0 || items.length === 0) {
-            listElement.innerHTML = '<li><span>Belum ada pengeluaran</span><strong>0%</strong></li>';
+            listElement.innerHTML = '<li><span class="text-muted">Belum ada pengeluaran</span><strong>0%</strong></li>';
             return;
         }
 
-        listElement.innerHTML = items.slice(0, 5).map((item, index) => {
+        listElement.innerHTML = items.slice(0, 6).map((item, index) => {
             const color = PALETTE[index % PALETTE.length];
             return `
                 <li>
@@ -125,9 +136,7 @@
 
     function createBarChart(canvas, labels, incomes, expenses, existingChart) {
         if (!canvas || typeof window.Chart === 'undefined') return null;
-        if (existingChart) {
-            existingChart.destroy();
-        }
+        if (existingChart) existingChart.destroy();
 
         return new window.Chart(canvas.getContext('2d'), {
             type: 'bar',
@@ -137,16 +146,18 @@
                     {
                         label: 'Pemasukan',
                         data: incomes,
-                        backgroundColor: '#1FA66A',
-                        borderRadius: 6,
-                        maxBarThickness: 22
+                        backgroundColor: '#1F9D63',
+                        borderRadius: { topLeft: 5, topRight: 5 },
+                        barPercentage: 0.7,
+                        categoryPercentage: 0.55
                     },
                     {
                         label: 'Pengeluaran',
                         data: expenses,
                         backgroundColor: '#D64545',
-                        borderRadius: 6,
-                        maxBarThickness: 22
+                        borderRadius: { topLeft: 5, topRight: 5 },
+                        barPercentage: 0.7,
+                        categoryPercentage: 0.55
                     }
                 ]
             },
@@ -157,30 +168,19 @@
                     legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            label: function (ctx) {
-                                return `${ctx.dataset.label}: ${formatRupiah(ctx.parsed.y)}`;
-                            }
+                            label: (ctx) => `${ctx.dataset.label}: ${formatRupiah(ctx.parsed.y)}`
                         }
                     }
                 },
                 scales: {
                     x: {
                         grid: { display: false },
-                        ticks: { color: '#6B7785', font: { size: 12 } }
+                        border: { color: '#E5EBF2' },
+                        ticks: { color: '#64748B', font: { size: 12 } }
                     },
                     y: {
                         beginAtZero: true,
-                        border: { display: false },
-                        grid: { color: '#E2E8F0' },
-                        ticks: {
-                            color: '#6B7785',
-                            font: { size: 11 },
-                            callback: function (value) {
-                                if (value >= 1000000) return 'Rp ' + (value / 1000000).toFixed(1) + 'jt';
-                                if (value >= 1000) return 'Rp ' + (value / 1000).toFixed(0) + 'rb';
-                                return 'Rp ' + value;
-                            }
-                        }
+                        display: false
                     }
                 }
             }
@@ -189,12 +189,10 @@
 
     function createDonutChart(canvas, categoryData, existingChart) {
         if (!canvas || typeof window.Chart === 'undefined') return null;
-        if (existingChart) {
-            existingChart.destroy();
-        }
+        if (existingChart) existingChart.destroy();
 
         const hasData = categoryData.grandTotal > 0 && categoryData.items.length > 0;
-        const labels = hasData ? categoryData.items.map((i) => i.category) : ['Belum ada data'];
+        const labels = hasData ? categoryData.items.map((i) => i.category) : ['Kosong'];
         const values = hasData ? categoryData.items.map((i) => i.total) : [1];
         const colors = hasData
             ? categoryData.items.map((_, idx) => PALETTE[idx % PALETTE.length])
@@ -204,27 +202,22 @@
             type: 'doughnut',
             data: {
                 labels,
-                datasets: [
-                    {
-                        data: values,
-                        backgroundColor: colors,
-                        borderWidth: 2,
-                        borderColor: '#FFFFFF'
-                    }
-                ]
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors,
+                    borderWidth: 0
+                }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '68%',
+                cutout: '66%',
                 plugins: {
                     legend: { display: false },
                     tooltip: {
                         enabled: hasData,
                         callbacks: {
-                            label: function (ctx) {
-                                return `${ctx.label}: ${formatRupiah(ctx.parsed)}`;
-                            }
+                            label: (ctx) => `${ctx.label}: ${formatRupiah(ctx.parsed)}`
                         }
                     }
                 }
@@ -258,6 +251,11 @@
             categoryData,
             dashboardDonutInstance
         );
+
+        const donutCenterTotal = document.getElementById('donutCenterTotal');
+        if (donutCenterTotal) {
+            donutCenterTotal.textContent = formatCompactRupiah(categoryData.grandTotal);
+        }
 
         renderCategoryLegendList(document.getElementById('expenseCategoryLegend'), categoryData);
     }
@@ -305,13 +303,8 @@
         await renderReportCharts(txList);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        renderAllCharts();
-    });
-
-    window.addEventListener('smartfinance:data-changed', () => {
-        renderAllCharts();
-    });
+    document.addEventListener('DOMContentLoaded', renderAllCharts);
+    window.addEventListener('smartfinance:data-changed', renderAllCharts);
 
     window.SmartCharts = {
         renderDashboardCharts,
