@@ -1,0 +1,91 @@
+/* =========================================================================
+   SMART FINANCE - Responsive Rules (Tablet & Mobile Bottom Navigation)
+   ========================================================================= */
+@media (max-width: 960px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 14px 14px calc(var(--bottom-nav-height) + 24px);
+    }
+
+    .topbar {
+        padding: 12px 14px;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .kpi-value {
+        font-size: 18px;
+    }
+
+    /* Navigasi Bawah 5 Tombol dengan Tombol + di Tengah */
+    .mobile-bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: var(--bottom-nav-height);
+        background: #FFFFFF;
+        border-top: 1px solid var(--border-color);
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        align-items: center;
+        padding: 0 6px;
+        box-shadow: 0 -4px 16px rgba(11, 37, 69, 0.08);
+        z-index: 60;
+    }
+
+    .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .bottom-nav-item.active {
+        color: var(--navy-primary);
+    }
+
+    .fab-center-btn {
+        width: 52px;
+        height: 52px;
+        margin: -22px auto 0;
+        border-radius: 50%;
+        background: var(--green-primary);
+        color: #FFFFFF;
+        border: 4px solid #FFFFFF;
+        box-shadow: 0 6px 16px rgba(31, 166, 106, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .cat-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+    }
+
+    .landing-hero {
+        margin-top: 20px;
+    }
+}
