@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0B2545">
+    <meta name="description" content="SMART FINANCE - Sistem Pengelolaan Keuangan Pribadi & Perencanaan Tabungan">
+    <title>{% block title %}SMART FINANCE{% endblock %}</title>
+
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/icons/icon-192x192.png') }}">
+
+    <!-- Tipografi Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets Utama -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+
+    <!-- Outline Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="app-body">
+
+    <!-- Overlay Keamanan PIN 6 Digit -->
+    <div id="pinLockOverlay" class="pin-overlay hidden" aria-hidden="true">
+        <div class="pin-card">
+            <div class="brand-badge">SF</div>
+            <h2>Masukkan PIN Keamanan</h2>
+            <p>Masukkan 6 digit PIN untuk membuka SMART FINANCE</p>
+            <div class="pin-dots" id="pinDots">
+                <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p id="pinErrorMsg" class="text-danger hidden">PIN salah, silakan coba lagi.</p>
+            <div class="pin-keypad">
+                <button type="button" data-num="1">1</button>
+                <button type="button" data-num="2">2</button>
+                <button type="button" data-num="3">3</button>
+                <button type="button" data-num="4">4</button>
+                <button type="button" data-num="5">5</button>
+                <button type="button" data-num="6">6</button>
+                <button type="button" data-num="7">7</button>
+                <button type="button" data-num="8">8</button>
+                <button type="button" data-num="9">9</button>
+                <button type="button" class="btn-clear" id="pinClear">Hapus</button>
+                <button type="button" data-num="0">0</button>
+                <button type="button" class="btn-back" id="pinBackspace"><i data-lucide="delete"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-layout">
+        <!-- SIDEBAR NAVIGASI DESKTOP / PC (Navy #0B2545) -->
+        <aside class="desktop-sidebar">
+            <div class="sidebar-header">
+                <div class="logo-box">
+                    <span class="logo-icon"><i data-lucide="wallet-cards"></i></span>
+                    <span class="logo-text">SMART FINANCE</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Navigasi Utama Desktop">
+                <a href="{{ url_for('dashboard') }}" class="nav-item {% if active_page == 'dashboard' %}active{% endif %}">
+                    <i data-lucide="layout-dashboard"></i><span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('income') }}" class="nav-item {% if active_page == 'income' %}active{% endif %}">
+                    <i data-lucide="arrow-down-left"></i><span>Income</span>
+                </a>
+                <a href="{{ url_for('expense') }}" class="nav-item {% if active_page == 'expense' %}active{% endif %}">
+                    <i data-lucide="arrow-up-right"></i><span>Expense</span>
+                </a>
+                <a href="{{ url_for('savings') }}" class="nav-item {% if active_page == 'savings' %}active{% endif %}">
+                    <i data-lucide="piggy-bank"></i><span>Savings</span>
+                </a>
+                <a href="{{ url_for('budget') }}" class="nav-item {% if active_page == 'budget' %}active{% endif %}">
+                    <i data-lucide="pie-chart"></i><span>Budget</span>
+                </a>
+                <a href="{{ url_for('history') }}" class="nav-item {% if active_page == 'history' %}active{% endif %}">
+                    <i data-lucide="history"></i><span>History</span>
+                </a>
+                <a href="{{ url_for('report') }}" class="nav-item {% if active_page == 'report' %}active{% endif %}">
+                    <i data-lucide="bar-chart-3"></i><span>Report</span>
+                </a>
+                <a href="{{ url_for('wallet') }}" class="nav-item {% if active_page == 'wallet' %}active{% endif %}">
+                    <i data-lucide="credit-card"></i><span>Wallet</span>
+                </a>
+            </nav>
+
+            <!-- Banner Akun Tamu di Sidebar -->
+            <div id="sidebarGuestBanner" class="guest-sidebar-card">
+                <p>Akun tamu: data hanya tersimpan di perangkat ini.</p>
+                <a href="{{ url_for('profile') }}#connect-account" class="btn btn-success btn-sm btn-block">Hubungkan akun</a>
+            </div>
+
+            <!-- Menu Bawah Sidebar -->
+            <div class="sidebar-footer">
+                <a href="{{ url_for('profile') }}" class="nav-item {% if active_page == 'profile' %}active{% endif %}">
+                    <i data-lucide="user"></i><span>Profil</span>
+                </a>
+                <a href="{{ url_for('settings') }}" class="nav-item {% if active_page == 'settings' %}active{% endif %}">
+                    <i data-lucide="settings"></i><span>Pengaturan</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- AREA KONTEN UTAMA -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- BOTTOM NAVIGATION BAR HP (5 Tombol dengan + di tengah) -->
+    <nav class="mobile-bottom-nav" aria-label="Navigasi Utama Mobile">
+        <a href="{{ url_for('dashboard') }}" class="bottom-nav-item {% if active_page == 'dashboard' %}active{% endif %}">
+            <i data-lucide="home"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="{{ url_for('history') }}" class="bottom-nav-item {% if active_page == 'history' %}active{% endif %}">
+            <i data-lucide="file-text"></i>
+            <span>Transaksi</span>
+        </a>
+        <button type="button" class="bottom-nav-fab" id="openQuickTxModalMobile" aria-label="Tambah Transaksi Cepat">
+            <i data-lucide="plus"></i>
+        </button>
+        <a href="{{ url_for('savings') }}" class="bottom-nav-item {% if active_page == 'savings' %}active{% endif %}">
+            <i data-lucide="target"></i>
+            <span>Tabungan</span>
+        </a>
+        <button type="button" class="bottom-nav-item" id="openMobileMenuDrawer" aria-label="Buka Menu Lainnya">
+            <i data-lucide="menu"></i>
+            <span>Menu</span>
+        </button>
+    </nav>
+
+    <!-- DRAWER MENU TAMBAHAN HP (Anggaran, Laporan, Dompet, Profil, Pengaturan) -->
+    <div id="mobileMenuDrawer" class="drawer-backdrop hidden">
+        <div class="drawer-sheet">
+            <div class="drawer-header">
+                <h3>Menu Lainnya</h3>
+                <button type="button" class="icon-btn" id="closeMobileMenuDrawer"><i data-lucide="x"></i></button>
+            </div>
+            <div class="drawer-grid">
+                <a href="{{ url_for('budget') }}" class="drawer-menu-card">
+                    <i data-lucide="pie-chart"></i><span>Anggaran</span>
+                </a>
+                <a href="{{ url_for('report') }}" class="drawer-menu-card">
+                    <i data-lucide="bar-chart-3"></i><span>Laporan</span>
+                </a>
+                <a href="{{ url_for('wallet') }}" class="drawer-menu-card">
+                    <i data-lucide="wallet"></i><span>Dompet</span>
+                </a>
+                <a href="{{ url_for('profile') }}" class="drawer-menu-card">
+                    <i data-lucide="user"></i><span>Profil</span>
+                </a>
+                <a href="{{ url_for('settings') }}" class="drawer-menu-card">
+                    <i data-lucide="settings"></i><span>Pengaturan</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH TRANSAKSI CEPAT (3 Ketukan dari Halaman Mana Pun) -->
+    <div id="quickTxModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="quickTxTitle">
+        <div class="modal-card modal-tx">
+            <div class="modal-tx-header">
+                <button type="button" class="icon-btn text-white" id="closeQuickTxModal"><i data-lucide="chevron-left"></i></button>
+                <h2 id="quickTxTitle">Tambah Transaksi</h2>
+                <span class="spacer"></span>
+            </div>
+
+            <form id="quickTransactionForm" class="tx-form">
+                <!-- Tab Pemasukan / Pengeluaran -->
+                <div class="tx-type-switcher">
+                    <button type="button" class="tx-type-btn" data-type="income">Pemasukan</button>
+                    <button type="button" class="tx-type-btn active" data-type="expense">Pengeluaran</button>
+                    <input type="hidden" name="type" id="txTypeInput" value="expense">
+                </div>
+
+                <!-- Input Nominal Besar -->
+                <div class="tx-amount-box">
+                    <label for="txAmountInput">Nominal</label>
+                    <div class="amount-input-wrapper">
+                        <span class="currency-prefix">Rp</span>
+                        <input type="number" id="txAmountInput" name="amount" placeholder="0" min="1" step="any" required>
+                    </div>
+                </div>
+
+                <div class="tx-form-body">
+                    <!-- Grid Ikon Kategori -->
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <div class="category-icon-grid" id="txCategoryGrid">
+                            <button type="button" class="cat-chip active" data-cat="Makan"><i data-lucide="utensils"></i><span>Makan</span></button>
+                            <button type="button" class="cat-chip" data-cat="Transportasi"><i data-lucide="car"></i><span>Transpor</span></button>
+                            <button type="button" class="cat-chip" data-cat="Tagihan"><i data-lucide="file-text"></i><span>Tagihan</span></button>
+                            <button type="button" class="cat-chip" data-cat="Kesehatan"><i data-lucide="heart-pulse"></i><span>Kesehatan</span></button>
+                            <button type="button" class="cat-chip" data-cat="Hiburan"><i data-lucide="film"></i><span>Hiburan</span></button>
+                            <button type="button" class="cat-chip" data-cat="Belanja"><i data-lucide="shopping-bag"></i><span>Belanja</span></button>
+                            <button type="button" class="cat-chip" data-cat="Pendidikan"><i data-lucide="graduation-cap"></i><span>Pendidikan</span></button>
+                            <button type="button" class="cat-chip" data-cat="Lainnya"><i data-lucide="more-horizontal"></i><span>Lainnya</span></button>
+                        </div>
+                        <input type="hidden" name="category" id="txCategoryInput" value="Makan">
+                    </div>
+
+                    <!-- Detail Dompet, Tanggal, Catatan -->
+                    <div class="card detail-fields-card">
+                        <div class="inline-field">
+                            <label for="txWalletSelect">Dompet</label>
+                            <select id="txWalletSelect" name="wallet_uuid" required>
+                                <option value="default-cash">Tunai</option>
+                                <option value="default-bank">Bank BCA</option>
+                                <option value="default-ewallet">E-Wallet</option>
+                            </select>
+                        </div>
+                        <div class="inline-field">
+                            <label for="txDateInput">Tanggal</label>
+                            <input type="date" id="txDateInput" name="transaction_date" required>
+                        </div>
+                        <div class="inline-field">
+                            <label for="txNoteInput">Catatan</label>
+                            <input type="text" id="txNoteInput" name="note" placeholder="Contoh: Makan siang">
+                        </div>
+                    </div>
+
+                    <!-- Info Mode Offline -->
+                    <div class="offline-info-box">
+                        <i data-lucide="info"></i>
+                        <span>Jika offline, transaksi disimpan di perangkat dan disinkronkan otomatis nanti.</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Simpan transaksi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts Inti -->
+    <script src="{{ url_for('static', filename='js/db-local.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sync.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pin-lock.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
