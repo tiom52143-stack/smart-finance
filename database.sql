@@ -1,0 +1,1 @@
+-- SMART FINANCE - MySQL Database Schema
