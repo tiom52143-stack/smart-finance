@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Target Tabungan — SMART FINANCE{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Tabungan -->
+<header class="page-header navy-mobile-header">
+    <div>
+        <h1>Target Tabungan</h1>
+        <p class="header-subtitle">Rencanakan impian dan pantau progres dana tabungan Anda</p>
+    </div>
+    <div class="header-actions">
+        <button type="button" id="openNewGoalModal" class="btn btn-success">
+            <i data-lucide="plus"></i>
+            <span>Target Baru</span>
+        </button>
+    </div>
+</header>
+
+<!-- Ringkasan Total Tabungan -->
+<section class="summary-banner-grid" aria-label="Ringkasan Tabungan">
+    <article class="card">
+        <span class="kpi-label">Total Dana Terkumpul</span>
+        <div class="kpi-value text-success" id="savingsTotalSaved">Rp 0</div>
+        <p class="kpi-meta" id="savingsOverallMeta">0% dari keseluruhan target</p>
+    </article>
+    <article class="card">
+        <span class="kpi-label">Target Aktif</span>
+        <div class="kpi-value" id="savingsActiveCount">0 Target</div>
+        <p class="kpi-meta">Terus konsisten menyisihkan dana</p>
+    </article>
+</section>
+
+<!-- Kalkulator Simulasi Tabungan -->
+<section class="card filter-panel" aria-label="Kalkulator Target Tabungan">
+    <div class="card-header-row">
+        <h3><i data-lucide="calculator" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"></i>Simulasi Target Tabungan</h3>
+    </div>
+    <div class="filter-grid-3">
+        <div class="form-group" style="margin-bottom:0;">
+            <label for="calcTargetAmount">Nominal Impian (Rp)</label>
+            <input type="number" id="calcTargetAmount" class="form-input" placeholder="Contoh: 10000000" min="1000">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+            <label for="calcMonths">Jangka Waktu (Bulan)</label>
+            <input type="number" id="calcMonths" class="form-input" placeholder="Contoh: 12" min="1" max="120">
+        </div>
+        <button type="button" id="calculateSavingsBtn" class="btn btn-navy">Hitung Setoran</button>
+    </div>
+    <div id="calcResultBox" class="calc-result-box hidden" style="margin-top:14px;margin-bottom:0;">
+        <span class="text-muted" style="font-size:13px;">Estimasi kebutuhan tabungan rutin Anda:</span>
+        <strong class="text-success" style="font-size:18px;" id="calcMonthlyOutput">Rp 0 / bulan</strong>
+        <small class="text-muted" id="calcDailyOutput">Atau sekitar Rp 0 / hari</small>
+    </div>
+</section>
+
+<!-- Toolbar Daftar Target -->
+<div class="section-toolbar">
+    <h3>Daftar Impian & Target</h3>
+    <span class="text-muted" id="goalsListCount">0 target</span>
+</div>
+
+<!-- Grid Kartu Target Tabungan -->
+<section class="goals-grid" id="savingsGoalsGrid" aria-label="Daftar Target Tabungan">
+    <article class="card">
+        <p class="text-muted">Belum ada target tabungan. Klik tombol <strong>"Target Baru"</strong> untuk mulai merencanakan tabungan Anda.</p>
+    </article>
+</section>
+
+<!-- Modal Buat Target Tabungan Baru -->
+<div id="newGoalModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="newGoalModalTitle">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="newGoalModalTitle" style="font-size:18px;">Buat Target Tabungan</h2>
+            <button type="button" class="icon-btn" id="closeNewGoalModal" aria-label="Tutup Modal">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <form id="newGoalForm">
+            <div class="form-group">
+                <label for="goalTitleInput">Nama Target</label>
+                <input type="text" id="goalTitleInput" name="title" class="form-input" placeholder="Contoh: Dana Darurat, Liburan, Laptop" required>
+            </div>
+            <div class="form-group">
+                <label for="goalTargetInput">Target Nominal (Rp)</label>
+                <input type="number" id="goalTargetInput" name="target_amount" class="form-input" placeholder="5000000" min="1000" required>
+            </div>
+            <div class="form-group">
+                <label for="goalInitialInput">Saldo Awal (Opsional)</label>
+                <input type="number" id="goalInitialInput" name="current_amount" class="form-input" placeholder="0" min="0" value="0">
+            </div>
+            <div class="form-group">
+                <label for="goalDeadlineInput">Target Tercapai Pada</label>
+                <input type="date" id="goalDeadlineInput" name="deadline" class="form-input" required>
+            </div>
+            <button type="submit" class="btn btn-success btn-block">Simpan Target</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Setor Dana ke Target Tabungan -->
+<div id="depositGoalModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="depositGoalTitle">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="depositGoalTitle" style="font-size:18px;">Tambah Saldo Tabungan</h2>
+            <button type="button" class="icon-btn" id="closeDepositGoalModal" aria-label="Tutup Modal">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <form id="depositGoalForm">
+            <input type="hidden" id="depositGoalUuid" name="goal_uuid">
+            <p class="text-muted" style="margin-bottom:14px;">Target: <strong id="depositGoalNameLabel" style="color:var(--color-text-main);">-</strong></p>
+
+            <div class="form-group">
+                <label for="depositAmountInput">Nominal Setoran (Rp)</label>
+                <input type="number" id="depositAmountInput" name="amount" class="form-input" placeholder="100000" min="100" required>
+            </div>
+            <div class="form-group">
+                <label for="depositWalletSelect">Ambil dari Dompet</label>
+                <select id="depositWalletSelect" name="wallet_uuid" class="form-select" required>
+                    <option value="default-cash">Tunai</option>
+                    <option value="default-bank">Bank BCA</option>
+                    <option value="default-ewallet">E-Wallet</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success btn-block">Setor ke Tabungan</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
