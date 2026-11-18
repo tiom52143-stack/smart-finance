@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Pemasukan — SMART FINANCE{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Pemasukan -->
+<header class="page-header navy-mobile-header">
+    <div>
+        <h1>Pemasukan</h1>
+        <p class="header-subtitle">Catat dan pantau seluruh sumber pendapatan Anda</p>
+    </div>
+    <div class="header-actions">
+        <button type="button" class="btn btn-success open-quick-tx" data-preset-type="income">
+            <i data-lucide="plus"></i>
+            <span>Tambah Pemasukan</span>
+        </button>
+    </div>
+</header>
+
+<!-- Ringkasan Pemasukan Bulan Ini -->
+<section class="summary-banner-grid" aria-label="Ringkasan Pemasukan">
+    <article class="card">
+        <span class="kpi-label">Total Pemasukan Bulan Ini</span>
+        <div class="kpi-value text-success" id="incomeTotalMonth">Rp 0</div>
+        <p class="kpi-meta" id="incomePeriodLabel">Periode bulan berjalan</p>
+    </article>
+    <article class="card">
+        <span class="kpi-label">Frekuensi Pemasukan</span>
+        <div class="kpi-value" id="incomeCountMonth">0 Transaksi</div>
+        <p class="kpi-meta">Tercatat di seluruh dompet aktif</p>
+    </article>
+</section>
+
+<!-- Panel Filter & Pencarian -->
+<section class="card filter-panel" aria-label="Filter Pemasukan">
+    <div class="filter-grid-4">
+        <input type="search" id="incomeSearchInput" class="form-input" placeholder="Cari catatan pemasukan...">
+        <select id="incomeCategoryFilter" class="form-select" aria-label="Filter Kategori Pemasukan">
+            <option value="all">Semua Kategori</option>
+            <option value="Gaji">Gaji</option>
+            <option value="Bonus">Bonus</option>
+            <option value="Bisnis">Bisnis</option>
+            <option value="Investasi">Investasi</option>
+            <option value="Hadiah">Hadiah</option>
+            <option value="Lainnya">Lainnya</option>
+        </select>
+        <select id="incomeWalletFilter" class="form-select" aria-label="Filter Dompet">
+            <option value="all">Semua Dompet</option>
+            <option value="default-cash">Tunai</option>
+            <option value="default-bank">Bank BCA</option>
+            <option value="default-ewallet">E-Wallet</option>
+        </select>
+        <input type="month" id="incomeMonthFilter" class="form-input" aria-label="Filter Bulan">
+    </div>
+</section>
+
+<!-- Daftar Riwayat Pemasukan -->
+<section class="card" aria-label="Daftar Pemasukan">
+    <div class="card-header-row">
+        <h3>Riwayat Pemasukan</h3>
+        <span class="text-muted" id="incomeResultCount">0 data ditampilkan</span>
+    </div>
+    <div class="tx-card-list" id="incomeListContainer">
+        <p class="text-muted">Belum ada catatan pemasukan. Klik tombol "Tambah Pemasukan" untuk mulai mencatat.</p>
+    </div>
+</section>
+{% endblock %}
