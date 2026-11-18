@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Pengaturan — SMART FINANCE{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Pengaturan -->
+<header class="page-header navy-mobile-header">
+    <div>
+        <h1>Pengaturan</h1>
+        <p class="header-subtitle">Atur keamanan PIN, pengingat harian, dan pencadangan data aplikasi</p>
+    </div>
+</header>
+
+<!-- Tumpukan Kartu Pengaturan -->
+<div class="settings-stack">
+    <!-- 1. Keamanan Kunci PIN 6 Digit -->
+    <section class="card" aria-label="Keamanan PIN">
+        <div class="setting-row">
+            <div>
+                <h3 style="font-size: 16px; font-weight: 700;">
+                    <i data-lucide="shield" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;color:var(--color-navy);"></i>Kunci Keamanan PIN (6 Digit)
+                </h3>
+                <p class="text-muted" style="font-size: 13px; margin-top: 2px;">
+                    Wajibkan 6 digit PIN setiap kali aplikasi dibuka untuk menjaga privasi catatan keuangan Anda.
+                </p>
+            </div>
+            <label class="switch" aria-label="Aktifkan Kunci PIN">
+                <input type="checkbox" id="pinLockToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- Panel Atur / Ubah PIN -->
+        <div id="pinSetupBox" class="pin-setup-box hidden">
+            <form id="savePinForm">
+                <div class="inline-settings-grid">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label for="newPinInput">PIN Baru (6 Angka)</label>
+                        <input type="password" id="newPinInput" class="form-input" inputmode="numeric" maxlength="6" pattern="\d{6}" placeholder="Contoh: 123456" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label for="confirmPinInput">Konfirmasi PIN</label>
+                        <input type="password" id="confirmPinInput" class="form-input" inputmode="numeric" maxlength="6" pattern="\d{6}" placeholder="Ulangi 6 digit PIN" required>
+                    </div>
+                    <div style="display:flex;align-items:flex-end;">
+                        <button type="submit" class="btn btn-navy btn-block">Simpan PIN</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- 2. Pengingat Pencatatan Harian -->
+    <section class="card" aria-label="Pengingat Harian">
+        <div class="setting-row">
+            <div>
+                <h3 style="font-size: 16px; font-weight: 700;">
+                    <i data-lucide="bell" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;color:var(--color-navy);"></i>Pengingat Catat Transaksi Harian
+                </h3>
+                <p class="text-muted" style="font-size: 13px; margin-top: 2px;">
+                    Terima pengingat rutin agar tidak ada pengeluaran harian yang terlewat dicatat.
+                </p>
+            </div>
+            <label class="switch" aria-label="Aktifkan Pengingat Harian">
+                <input type="checkbox" id="dailyReminderToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div id="reminderTimeBox" class="pin-setup-box hidden">
+            <div class="inline-settings-grid">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label for="reminderTimeInput">Jam Pengingat</label>
+                    <input type="time" id="reminderTimeInput" class="form-input" value="20:00">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label for="reminderNoteInput">Pesan Pengingat</label>
+                    <input type="text" id="reminderNoteInput" class="form-input" value="Waktunya mencatat transaksi keuangan hari ini!">
+                </div>
+                <div style="display:flex;align-items:flex-end;">
+                    <button type="button" id="saveReminderBtn" class="btn btn-success btn-block">Simpan Jadwal</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Sinkronisasi & Cadangan Data (Backup / Restore JSON) -->
+    <section class="card" aria-label="Cadangan dan Sinkronisasi Data">
+        <div class="card-header-row">
+            <h3>
+                <i data-lucide="database" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;color:var(--color-navy);"></i>Sinkronisasi & Cadangan Data
+            </h3>
+        </div>
+        <p class="text-muted" style="font-size: 13.5px; margin-bottom: 14px;">
+            Cadangkan seluruh data lokal (transaksi, dompet, anggaran, dan target tabungan) ke berkas JSON atau sinkronkan langsung dengan server.
+        </p>
+
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            <button type="button" id="settingsSyncNowBtn" class="btn btn-navy">
+                <i data-lucide="refresh-cw"></i>
+                <span>Sinkronkan Sekarang</span>
+            </button>
+            <button type="button" id="exportJsonBackupBtn" class="btn btn-outline-success">
+                <i data-lucide="download"></i>
+                <span>Ekspor Cadangan (.JSON)</span>
+            </button>
+            <label for="importJsonBackupInput" class="btn btn-outline-navy" style="cursor:pointer;">
+                <i data-lucide="upload"></i>
+                <span>Pulihkan Cadangan (.JSON)</span>
+            </label>
+            <input type="file" id="importJsonBackupInput" accept=".json,application/json" class="hidden">
+        </div>
+    </section>
+
+    <!-- 4. Instalasi PWA & Reset Penyimpanan Lokal -->
+    <section class="card" aria-label="Aplikasi dan Reset Data">
+        <div class="setting-row" style="padding-bottom: 16px; border-bottom: 1px solid var(--color-border);">
+            <div>
+                <h3 style="font-size: 16px; font-weight: 700;">
+                    <i data-lucide="smartphone" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;color:var(--color-navy);"></i>Pasang Aplikasi (PWA)
+                </h3>
+                <p class="text-muted" style="font-size: 13px; margin-top: 2px;">
+                    Tambahkan SMART FINANCE ke layar utama HP atau desktop untuk akses cepat layar penuh.
+                </p>
+            </div>
+            <button type="button" id="settingsInstallPwaBtn" class="btn btn-success">
+                <i data-lucide="download"></i>
+                <span>Pasang Aplikasi</span>
+            </button>
+        </div>
+
+        <div class="setting-row" style="padding-top: 16px;">
+            <div>
+                <h3 style="font-size: 16px; font-weight: 700; color: var(--color-red);">Reset Data Lokal Perangkat</h3>
+                <p class="text-muted" style="font-size: 13px; margin-top: 2px;">
+                    Hapus seluruh catatan keuangan yang tersimpan di browser perangkat ini dan kembalikan ke pengaturan awal.
+                </p>
+            </div>
+            <button type="button" id="resetLocalDataBtn" class="btn btn-outline-danger">
+                <i data-lucide="trash-2"></i>
+                <span>Hapus Data Lokal</span>
+            </button>
+        </div>
+    </section>
+</div>
+{% endblock %}
