@@ -1,97 +1,35 @@
 {% extends "base.html" %}
-
 {% block title %}Profil Pengguna — SMART FINANCE{% endblock %}
 
 {% block content %}
-<!-- Header Halaman Profil -->
-<header class="page-header navy-mobile-header">
-    <div>
-        <h1>Profil Pengguna</h1>
-        <p class="header-subtitle">Kelola identitas akun dan sinkronisasi data antar perangkat</p>
+<div class="card">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;">
+        <div id="profileAvatarInitial" style="width:60px;height:60px;border-radius:50%;background:var(--navy-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;">
+            SF
+        </div>
+        <div>
+            <h2 id="profileDisplayName" style="color:var(--navy-primary);font-size:19px;">Pengguna</h2>
+            <p class="text-muted" style="font-size:13px;">Penyimpanan Lokal Perangkat (Offline-First)</p>
+        </div>
     </div>
-</header>
 
-<!-- Kartu Ringkasan Identitas Pengguna -->
-<section class="card profile-overview-card" aria-label="Ringkasan Profil">
-    <div class="profile-avatar-lg" id="profileAvatarInitial">SF</div>
-    <div style="flex: 1;">
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px;">
-            <h2 id="profileDisplayName" style="font-size: 19px; font-weight: 800;">{{ user_name or 'Pengguna Tamu' }}</h2>
-            <span id="profileAccountBadge" class="status-pill status-warning">Mode Tamu (Lokal)</span>
+    <form id="updateProfileForm">
+        <div class="form-group">
+            <label for="profileNameInput">Nama Tampilan</label>
+            <input type="text" id="profileNameInput" placeholder="Masukkan nama panggilan Anda" required>
         </div>
-        <p class="text-muted" id="profileDisplayEmail" style="font-size: 13.5px;">
-            {{ user_email or 'Data tersimpan di browser perangkat ini' }}
-        </p>
+        <input type="hidden" id="profileEmailInput" value="">
+        <button type="submit" class="btn btn-primary">Simpan Nama</button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Cadangan & Keamanan Data</h3>
     </div>
-</section>
-
-<!-- Tumpukan Kartu Pengaturan Profil & Integrasi Akun -->
-<div class="settings-stack">
-    <!-- Formulir Ubah Data Profil -->
-    <section class="card" aria-label="Informasi Dasar">
-        <div class="card-header-row">
-            <h3>Informasi Dasar</h3>
-        </div>
-        <form id="updateProfileForm">
-            <div class="form-group">
-                <label for="profileNameInput">Nama Tampilan</label>
-                <input type="text" id="profileNameInput" name="full_name" class="form-input" value="{{ user_name or 'Pengguna Tamu' }}" placeholder="Masukkan nama panggilan Anda" required>
-            </div>
-            <div class="form-group">
-                <label for="profileEmailInput">Alamat Email</label>
-                <input type="email" id="profileEmailInput" name="email" class="form-input" value="{{ user_email or '' }}" placeholder="Belum terhubung ke email">
-            </div>
-            <button type="submit" class="btn btn-navy">Simpan Perubahan Profil</button>
-        </form>
-    </section>
-
-    <!-- Bagian Hubungkan / Migrasi Akun Tamu (OAuth 2.0 & Email) -->
-    <section id="connect-account" class="card" aria-label="Hubungkan Akun">
-        <div class="card-header-row">
-            <h3><i data-lucide="cloud-upload" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"></i>Hubungkan & Cadangkan Akun</h3>
-        </div>
-        <p class="text-muted" style="font-size: 13.5px; margin-bottom: 12px;">
-            Hubungkan sesi tamu Anda ke akun permanen agar seluruh riwayat transaksi, dompet, dan target tabungan otomatis dicadangkan ke server dan dapat diakses dari perangkat lain.
-        </p>
-
-        <div class="offline-info-box">
-            <i data-lucide="shield-check"></i>
-            <span>Seluruh catatan lokal Anda akan otomatis digabungkan tanpa menghapus data yang sudah ada.</span>
-        </div>
-
-        <div class="oauth-merge-buttons">
-            <a href="/auth/google?merge=1" class="btn-oauth" style="padding: 0 16px;">
-                <span class="oauth-badge" style="color: #EA4335;">G</span>
-                <span>Hubungkan Google</span>
-            </a>
-            <a href="/auth/facebook?merge=1" class="btn-oauth" style="padding: 0 16px;">
-                <span class="oauth-badge" style="color: #1877F2;">f</span>
-                <span>Hubungkan Facebook</span>
-            </a>
-            <a href="/auth/apple?merge=1" class="btn-oauth" style="padding: 0 16px;">
-                <span class="oauth-badge"><i data-lucide="apple" style="width:18px;height:18px;"></i></span>
-                <span>Hubungkan Apple</span>
-            </a>
-            <a href="{{ url_for('register') }}" class="btn btn-outline-navy">
-                Daftar dengan Email
-            </a>
-        </div>
-    </section>
-
-    <!-- Status Sinkronisasi & Keluar Sesi -->
-    <section class="card" aria-label="Status Sesi">
-        <div class="setting-row">
-            <div>
-                <h3 style="font-size: 16px; font-weight: 700;">Status Sesi & Sinkronisasi</h3>
-                <p class="text-muted" style="font-size: 13px;" id="profileSyncStatusText">
-                    Sinkronisasi terakhir: Belum disinkronkan ke server
-                </p>
-            </div>
-            <a href="{{ url_for('logout') }}" id="logoutSessionBtn" class="btn btn-outline-danger">
-                <i data-lucide="log-out"></i>
-                <span>Keluar</span>
-            </a>
-        </div>
-    </section>
+    <p class="text-muted" style="font-size:13.5px;margin-bottom:14px;">
+        Karena aplikasi berjalan langsung tanpa akun cloud, seluruh catatan transaksi tersimpan aman di browser perangkat ini. Anda dapat mengunduh file cadangan kapan saja melalui menu Pengaturan.
+    </p>
+    <a href="{{ url_for('settings') }}" class="btn btn-outline-navy">Buka Pengaturan & Cadangan JSON</a>
 </div>
 {% endblock %}
