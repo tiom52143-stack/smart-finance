@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — SMART FINANCE{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Header Halaman & Status Koneksi -->
+<header class="page-header dashboard-top-bar">
+    <div class="greeting-block">
+        <div class="mobile-avatar-badge" id="userAvatarBadge">SF</div>
+        <div>
+            <h1>Halo, <span id="userGreetingName">{{ user_name or 'Pengguna' }}</span></h1>
+            <span class="greeting-sub">Ringkasan keuangan Anda bulan ini</span>
+            <p class="current-date-text" id="currentDateDisplay">Memuat tanggal...</p>
+        </div>
+    </div>
+
+    <div class="header-actions">
+        <span id="networkStatusPill" class="status-pill status-online">
+            <span class="dot"></span>
+            <span id="networkStatusText">Online</span>
+        </span>
+        <button type="button" id="manualSyncBtn" class="icon-btn-circle" title="Sinkronkan Data" aria-label="Sinkronkan Data">
+            <i data-lucide="refresh-cw"></i>
+        </button>
+        <button type="button" id="openQuickTxModalDesktop" class="btn btn-success desktop-only-btn">
+            <i data-lucide="plus"></i>
+            <span>Tambah Transaksi</span>
+        </button>
+    </div>
+</header>
+
+<!-- 4 Kartu Ringkasan Utama (KPI) -->
+<section class="kpi-grid" aria-label="Ringkasan Keuangan">
+    <!-- Kartu Utama Navy (Tampil di Desktop & Mobile) -->
+    <article class="card kpi-card kpi-navy">
+        <div>
+            <span class="kpi-label">Total Saldo Bersih</span>
+            <div class="kpi-value" id="kpiTotalBalance">Rp 0</div>
+            <p class="kpi-meta" id="kpiBalanceMeta">Gabungan seluruh dompet aktif</p>
+        </div>
+
+        <!-- Ringkasan Arus Kas Khusus Mobile di Dalam Kartu Navy -->
+        <div class="mobile-card-flow">
+            <div>
+                <small><i data-lucide="arrow-down-left" style="width:14px;height:14px;"></i> Pemasukan</small>
+                <strong id="mobileMonthIncome">Rp 0</strong>
+            </div>
+            <div>
+                <small><i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i> Pengeluaran</small>
+                <strong id="mobileMonthExpense">Rp 0</strong>
+            </div>
+        </div>
+    </article>
+
+    <!-- 3 Kartu KPI Desktop -->
+    <article class="card kpi-card desktop-kpi">
+        <span class="kpi-label">Pemasukan Bulan Ini</span>
+        <div class="kpi-value text-success" id="kpiMonthIncome">Rp 0</div>
+        <p class="kpi-meta">Total dana masuk bulan berjalan</p>
+    </article>
+
+    <article class="card kpi-card desktop-kpi">
+        <span class="kpi-label">Pengeluaran Bulan Ini</span>
+        <div class="kpi-value text-danger" id="kpiMonthExpense">Rp 0</div>
+        <p class="kpi-meta">Total belanja & tagihan bulan ini</p>
+    </article>
+
+    <article class="card kpi-card desktop-kpi">
+        <span class="kpi-label">Total Tabungan</span>
+        <div class="kpi-value" id="kpiTotalSavings">Rp 0</div>
+        <p class="kpi-meta" id="kpiSavingsMeta">0% dari total target tercapai</p>
+    </article>
+</section>
+
+<!-- Strip Saldo per Dompet -->
+<section class="wallet-strip-section" aria-label="Daftar Dompet">
+    <div class="card-header-row">
+        <h3>Dompet Saya</h3>
+        <a href="{{ url_for('wallet') }}" class="link-primary">Kelola Dompet</a>
+    </div>
+    <div class="wallet-strip" id="dashboardWalletStrip">
+        <div class="wallet-mini-card">
+            <span class="wallet-name">Tunai</span>
+            <span class="wallet-amt">Rp 0</span>
+        </div>
+        <div class="wallet-mini-card">
+            <span class="wallet-name">Bank BCA</span>
+            <span class="wallet-amt">Rp 0</span>
+        </div>
+        <div class="wallet-mini-card">
+            <span class="wallet-name">E-Wallet</span>
+            <span class="wallet-amt">Rp 0</span>
+        </div>
+    </div>
+</section>
+
+<!-- Ringkasan Anggaran Bulan Ini (Khusus Mobile HP) -->
+<section class="card mobile-budget-summary">
+    <div class="card-header-row">
+        <h3>Anggaran Bulan Ini</h3>
+        <a href="{{ url_for('budget') }}" class="link-primary">Detail</a>
+    </div>
+    <div class="progress-track">
+        <div class="progress-fill bg-success" id="mobileBudgetProgressBar" style="width: 0%;"></div>
+    </div>
+    <p class="card-subtext" id="mobileBudgetSummaryText">Belum ada batas anggaran diatur untuk bulan ini.</p>
+</section>
+
+<!-- Bagian Grafik Visualisasi -->
+<section class="charts-grid" aria-label="Grafik Keuangan">
+    <!-- Grafik Batang Arus Kas 6 Bulan -->
+    <article class="card">
+        <div class="card-header-row">
+            <h3>Arus Kas 6 Bulan Terakhir</h3>
+            <div class="chart-legend">
+                <span><i class="legend-dot bg-success"></i>Pemasukan</span>
+                <span><i class="legend-dot bg-danger"></i>Pengeluaran</span>
+            </div>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="cashflowBarChart"></canvas>
+        </div>
+    </article>
+
+    <!-- Grafik Donut Pengeluaran per Kategori -->
+    <article class="card desktop-chart-card">
+        <div class="card-header-row">
+            <h3>Pengeluaran per Kategori</h3>
+            <a href="{{ url_for('report') }}" class="link-primary">Laporan</a>
+        </div>
+        <div class="donut-layout">
+            <div class="donut-canvas-box">
+                <canvas id="expenseDonutChart"></canvas>
+            </div>
+            <ul class="category-legend-list" id="expenseCategoryLegend">
+                <li><span>Belum ada data</span><strong>0%</strong></li>
+            </ul>
+        </div>
+    </article>
+</section>
+
+<!-- Bagian Bawah: Target Tabungan & Transaksi Terakhir -->
+<section class="bottom-dashboard-grid">
+    <!-- Progres Target Tabungan -->
+    <article class="card">
+        <div class="card-header-row">
+            <h3>Target Tabungan</h3>
+            <a href="{{ url_for('savings') }}" class="link-primary">Semua Target</a>
+        </div>
+        <div class="goal-summary-list" id="dashboardGoalsList">
+            <p class="text-muted">Belum ada target tabungan aktif. Buat target pertama Anda di menu Tabungan.</p>
+        </div>
+    </article>
+
+    <!-- Tabel 5 Transaksi Terakhir -->
+    <article class="card">
+        <div class="card-header-row">
+            <h3>Transaksi Terakhir</h3>
+            <a href="{{ url_for('history') }}" class="link-primary">Lihat Semua</a>
+        </div>
+        <div class="table-responsive">
+            <table class="tx-table">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Kategori & Catatan</th>
+                        <th>Dompet</th>
+                        <th class="text-right">Nominal</th>
+                    </tr>
+                </thead>
+                <tbody id="recentTransactionsBody">
+                    <tr>
+                        <td colspan="4" class="text-muted">Belum ada catatan transaksi. Klik tombol + untuk mulai mencatat.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}
