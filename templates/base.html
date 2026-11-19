@@ -14,17 +14,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Stylesheet Utama -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}?v=3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}?v=3">
 </head>
 <body>
     <div class="app-shell">
-        <!-- SIDEBAR BIRU TUA (SESUAI DESAIN TARGET) -->
+        <!-- SIDEBAR BIRU TUA -->
         <aside class="sidebar">
             <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
                 <span class="brand-icon-box">
@@ -85,15 +85,15 @@
             <header class="topbar">
                 <div>
                     <h1 id="pageMainTitle" class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
-                    <p id="currentDateDisplay" class="page-subtitle">Memuat tanggal...</p>
+                    <p id="currentDateDisplay" class="page-subtitle"></p>
                 </div>
 
                 <div class="topbar-actions">
                     <span id="networkStatusPill" class="status-pill status-online">
                         <span class="status-dot"></span>
-                        <span id="networkStatusText">Online • Tersinkron</span>
+                        <span id="networkStatusText">Online</span>
                     </span>
-                    <button type="button" id="openQuickTxModalDesktop" class="btn btn-success">
+                    <button type="button" id="openQuickTxModalDesktop" class="btn btn-success open-quick-tx">
                         <i data-lucide="plus" style="width:16px;height:16px;"></i>
                         <span>Tambah transaksi</span>
                     </button>
@@ -116,7 +116,7 @@
             <i data-lucide="list"></i>
             <span>History</span>
         </a>
-        <button type="button" id="openQuickTxModalMobile" class="fab-center-btn" aria-label="Tambah Transaksi">
+        <button type="button" id="openQuickTxModalMobile" class="fab-center-btn open-quick-tx" aria-label="Tambah Transaksi">
             <i data-lucide="plus"></i>
         </button>
         <a href="{{ url_for('budget') }}" class="bottom-nav-item {{ 'active' if active_page == 'budget' else '' }}">
@@ -130,8 +130,8 @@
     </nav>
 
     <!-- DRAWER MENU MOBILE -->
-    <div id="mobileMenuDrawer" class="modal-backdrop hidden">
-        <div class="modal-card">
+    <div id="mobileMenuDrawer" class="modal-backdrop hidden" style="padding:24px;">
+        <div class="modal-card" style="max-width:420px;max-height:calc(100vh - 48px);">
             <div class="modal-header">
                 <h3 class="text-navy">Semua Menu</h3>
                 <button type="button" id="closeMobileMenuDrawer" class="btn btn-outline-navy btn-sm">Tutup</button>
@@ -148,9 +148,9 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH TRANSAKSI CEPAT -->
-    <div id="quickTxModal" class="modal-backdrop hidden">
-        <div class="modal-card">
+    <!-- MODAL TAMBAH TRANSAKSI CEPAT (BERJARAK AMAN ATAS-BAWAH-KIRI-KANAN) -->
+    <div id="quickTxModal" class="modal-backdrop hidden" style="padding:24px;">
+        <div class="modal-card" style="max-width:440px;max-height:calc(100vh - 48px);margin:auto;">
             <div class="modal-header">
                 <h3 class="text-navy">Tambah Transaksi</h3>
                 <button type="button" id="closeQuickTxModal" class="btn btn-outline-navy btn-sm">✕</button>
@@ -167,7 +167,7 @@
 
                 <div class="form-group">
                     <label for="txAmountInput">Nominal (Rp)</label>
-                    <input type="number" id="txAmountInput" placeholder="0" min="1" required>
+                    <input type="text" id="txAmountInput" class="rupiah-input" inputmode="numeric" placeholder="Contoh: 50.000" required>
                 </div>
 
                 <div class="form-group">
@@ -223,10 +223,10 @@
     </div>
 
     <!-- MODUL JAVASCRIPT -->
-    <script src="{{ url_for('static', filename='js/db-local.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/sync.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/pin-lock.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/db-local.js') }}?v=3"></script>
+    <script src="{{ url_for('static', filename='js/sync.js') }}?v=3"></script>
+    <script src="{{ url_for('static', filename='js/pin-lock.js') }}?v=3"></script>
+    <script src="{{ url_for('static', filename='js/charts.js') }}?v=3"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}?v=3"></script>
 </body>
 </html>
