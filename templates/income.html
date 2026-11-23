@@ -1,67 +1,85 @@
 {% extends "base.html" %}
 
-{% block title %}Pemasukan — SMART FINANCE{% endblock %}
+{% block title %}Income — SMART FINANCE{% endblock %}
 
 {% block content %}
-<!-- Header Halaman Pemasukan -->
-<header class="page-header navy-mobile-header">
-    <div>
-        <h1>Pemasukan</h1>
-        <p class="header-subtitle">Catat dan pantau seluruh sumber pendapatan Anda</p>
-    </div>
-    <div class="header-actions">
-        <button type="button" class="btn btn-success open-quick-tx" data-preset-type="income">
+<div class="page-section">
+    <!-- Baris Aksi Atas -->
+    <div class="section-header-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+        <div>
+            <p class="text-muted" style="font-size:13px; margin:0;">Kelola dan pantau seluruh sumber pemasukan Anda</p>
+        </div>
+        <button type="button" class="btn btn-success open-quick-tx" data-preset-type="income" style="display:inline-flex; align-items:center; gap:8px;">
             <i data-lucide="plus"></i>
             <span>Tambah Pemasukan</span>
         </button>
     </div>
-</header>
 
-<!-- Ringkasan Pemasukan Bulan Ini -->
-<section class="summary-banner-grid" aria-label="Ringkasan Pemasukan">
-    <article class="card">
-        <span class="kpi-label">Total Pemasukan Bulan Ini</span>
-        <div class="kpi-value text-success" id="incomeTotalMonth">Rp 0</div>
-        <p class="kpi-meta" id="incomePeriodLabel">Periode bulan berjalan</p>
-    </article>
-    <article class="card">
-        <span class="kpi-label">Frekuensi Pemasukan</span>
-        <div class="kpi-value" id="incomeCountMonth">0 Transaksi</div>
-        <p class="kpi-meta">Tercatat di seluruh dompet aktif</p>
-    </article>
-</section>
+    <!-- Kartu Ringkasan Pemasukan -->
+    <div class="kpi-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; margin-bottom:20px;">
+        <div class="card kpi-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span class="text-muted" style="font-size:13px; font-weight:600;">Total Pemasukan</span>
+                <span style="width:34px; height:34px; border-radius:10px; background:rgba(31,166,106,0.12); color:#1FA66A; display:inline-flex; align-items:center; justify-content:center;">
+                    <i data-lucide="arrow-down-left"></i>
+                </span>
+            </div>
+            <h2 id="incomeTotalMonth" class="text-success" style="font-size:24px; font-weight:700; margin:0 0 4px 0;">Rp 0</h2>
+            <p id="incomeMonthSubtitle" class="card-subtext" style="margin:0;">Periode bulan ini</p>
+        </div>
 
-<!-- Panel Filter & Pencarian -->
-<section class="card filter-panel" aria-label="Filter Pemasukan">
-    <div class="filter-grid-4">
-        <input type="search" id="incomeSearchInput" class="form-input" placeholder="Cari catatan pemasukan...">
-        <select id="incomeCategoryFilter" class="form-select" aria-label="Filter Kategori Pemasukan">
-            <option value="all">Semua Kategori</option>
-            <option value="Gaji">Gaji</option>
-            <option value="Bonus">Bonus</option>
-            <option value="Bisnis">Bisnis</option>
-            <option value="Investasi">Investasi</option>
-            <option value="Hadiah">Hadiah</option>
-            <option value="Lainnya">Lainnya</option>
-        </select>
-        <select id="incomeWalletFilter" class="form-select" aria-label="Filter Dompet">
-            <option value="all">Semua Dompet</option>
-            <option value="default-cash">Tunai</option>
-            <option value="default-bank">Bank BCA</option>
-            <option value="default-ewallet">E-Wallet</option>
-        </select>
-        <input type="month" id="incomeMonthFilter" class="form-input" aria-label="Filter Bulan">
+        <div class="card kpi-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span class="text-muted" style="font-size:13px; font-weight:600;">Frekuensi Pemasukan</span>
+                <span style="width:34px; height:34px; border-radius:10px; background:rgba(11,37,69,0.08); color:#0B2545; display:inline-flex; align-items:center; justify-content:center;">
+                    <i data-lucide="layers"></i>
+                </span>
+            </div>
+            <h2 id="incomeCountMonth" style="font-size:24px; font-weight:700; color:#0B2545; margin:0 0 4px 0;">0 Transaksi</h2>
+            <p class="card-subtext" style="margin:0;">Tercatat pada periode terpilih</p>
+        </div>
     </div>
-</section>
 
-<!-- Daftar Riwayat Pemasukan -->
-<section class="card" aria-label="Daftar Pemasukan">
-    <div class="card-header-row">
-        <h3>Riwayat Pemasukan</h3>
-        <span class="text-muted" id="incomeResultCount">0 data ditampilkan</span>
+    <!-- Filter Riwayat Pemasukan -->
+    <div class="card" style="margin-bottom:20px;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+            <div>
+                <label for="incomeMonthFilter" style="display:block; font-size:12px; font-weight:600; color:#475569; margin-bottom:6px;">Periode Bulan</label>
+                <input type="month" id="incomeMonthFilter" class="form-control">
+            </div>
+            <div>
+                <label for="incomeCategoryFilter" style="display:block; font-size:12px; font-weight:600; color:#475569; margin-bottom:6px;">Kategori</label>
+                <select id="incomeCategoryFilter" class="form-control">
+                    <option value="all">Semua Kategori</option>
+                    <option value="Gaji">Gaji</option>
+                    <option value="Usaha">Usaha</option>
+                    <option value="Bonus">Bonus</option>
+                    <option value="Investasi">Investasi</option>
+                    <option value="Hadiah">Hadiah</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+            <div>
+                <label for="incomeWalletFilter" style="display:block; font-size:12px; font-weight:600; color:#475569; margin-bottom:6px;">Dompet</label>
+                <select id="incomeWalletFilter" class="form-control">
+                    <option value="all">Semua Dompet</option>
+                </select>
+            </div>
+            <div>
+                <label for="incomeSearchInput" style="display:block; font-size:12px; font-weight:600; color:#475569; margin-bottom:6px;">Cari Catatan</label>
+                <input type="text" id="incomeSearchInput" class="form-control" placeholder="Cari sumber pemasukan...">
+            </div>
+        </div>
     </div>
-    <div class="tx-card-list" id="incomeListContainer">
-        <p class="text-muted">Belum ada catatan pemasukan. Klik tombol "Tambah Pemasukan" untuk mulai mencatat.</p>
+
+    <!-- Daftar Riwayat Pemasukan -->
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h3 style="font-size:16px; font-weight:700; color:#0B2545; margin:0;">Riwayat Pemasukan</h3>
+        </div>
+        <div id="incomeListContainer">
+            <p class="text-muted" style="font-size:13px;">Memuat data pemasukan...</p>
+        </div>
     </div>
-</section>
+</div>
 {% endblock %}
