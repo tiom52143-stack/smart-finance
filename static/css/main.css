@@ -790,3 +790,48 @@ select:focus {
         padding: 0 !important;
     }
 }
+/* =========================================================================
+   POIN 3: UKURAN MODAL PROPORSIONAL & JARAK AMAN 4 SISI
+   ========================================================================= */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 20px;
+    background: rgba(11, 37, 69, 0.55);
+    backdrop-filter: blur(3px);
+    overflow-y: auto;
+}
+
+.modal-backdrop.hidden {
+    display: none !important;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 440px;
+    max-height: calc(100vh - 56px);
+    margin: auto;
+    background: #FFFFFF;
+    border-radius: 18px;
+    padding: 22px 24px;
+    box-shadow: 0 20px 45px rgba(11, 37, 69, 0.22);
+    overflow-y: auto;
+    position: relative;
+}
+
+@media (max-width: 480px) {
+    .modal-backdrop {
+        padding: 24px 16px;
+    }
+
+    .modal-card {
+        max-width: 100%;
+        max-height: calc(100vh - 48px);
+        padding: 18px;
+        border-radius: 16px;
+    }
+}
